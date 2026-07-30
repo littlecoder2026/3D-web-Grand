@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en-IE">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#163A2B" />
+    <title>GRAND. — The store, in three dimensions</title>
+    <meta
+      name="description"
+      content="An interactive walkthrough of the GRAND. store exterior and interior. Ireland's first legal recreational cannabis dispensary."
+    />
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <!-- ───────────────────────── The set ───────────────────────── -->
+    <div id="stage" aria-hidden="true"></div>
+
+    <!-- ─────────────────────── Progressive loader ─────────────────────── -->
+    <div id="loader" class="overlay overlay--cream" role="status" aria-live="polite">
+      <div class="loader__inner">
+        <div class="wordmark wordmark--lg">GRAND<span class="dot">.</span></div>
+        <p class="loader__caption">Opening up the shop</p>
+        <div class="loader__track" aria-hidden="true"><div class="loader__fill" id="loaderFill"></div></div>
+        <p class="loader__pct"><span id="loaderPct">0</span>%</p>
+        <p class="loader__step" id="loaderStep">Warming the lights</p>
+      </div>
+    </div>
+
+    <!-- ───────────────────────── Age gate ───────────────────────── -->
+    <div id="ageGate" class="overlay overlay--cream" hidden>
+      <div class="gate">
+        <div class="wordmark wordmark--md">GRAND<span class="dot">.</span></div>
+        <p class="gate__eyebrow">Before you come in</p>
+        <h1 class="gate__head">Are you 18 or over?</h1>
+        <p class="gate__body">
+          Legal cannabis in Ireland is for adults only. We ask everyone — no
+          exceptions, no hard feelings.
+        </p>
+        <div class="gate__actions">
+          <button id="gateYes" class="btn btn--solid" type="button">Yes, I'm 18 or over</button>
+          <button id="gateNo" class="btn btn--ghost" type="button">Not yet</button>
+        </div>
+        <p class="gate__foot">
+          A design showcase for ICAD Upstarts 2026. Nothing is for sale here.
+        </p>
+      </div>
+    </div>
+
+    <!-- Polite refusal — the granny test applies to being turned away, too. -->
+    <div id="ageDenied" class="overlay overlay--green" hidden>
+      <div class="gate gate--denied">
+        <div class="wordmark wordmark--md wordmark--cream">GRAND<span class="dot">.</span></div>
+        <h1 class="gate__head gate__head--cream">Come back and see us.</h1>
+        <p class="gate__body gate__body--cream">
+          We'll keep the lights on. In the meantime, mind yourself.
+        </p>
+        <button id="gateBack" class="btn btn--outline" type="button">Back</button>
+      </div>
+    </div>
+
+    <!-- ───────────────────────── Intro card ───────────────────────── -->
+    <div id="intro" class="overlay overlay--scrim" hidden>
+      <div class="intro">
+        <p class="intro__eyebrow">Store exterior &amp; interior · deliverables 2 and 3</p>
+        <h1 class="intro__head">Have a walk around.</h1>
+        <div class="intro__cols">
+          <div>
+            <h2 class="intro__sub">Take the tour</h2>
+            <p>
+              Six stops, hands-free, in the order a customer actually walks them.
+              Nothing to learn.
+            </p>
+            <button id="introTour" class="btn btn--solid" type="button">Play the tour</button>
+          </div>
+          <div>
+            <h2 class="intro__sub">Or explore it yourself</h2>
+            <p>
+              <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to walk, drag to look
+              around, <kbd>Shift</kbd> to move quicker. Click a gold marker to open it up.
+            </p>
+            <button id="introExplore" class="btn btn--ghost" type="button">Let me walk</button>
+          </div>
+        </div>
+        <p class="intro__shop">
+          Or skip the visit — <a href="./shop.html">shop the range online</a>.
+        </p>
+        <p class="intro__foot">
+          Keyboard only? <kbd>Tab</kbd> to the six stage buttons and press
+          <kbd>Enter</kbd>. Arrow keys look around.
+        </p>
+      </div>
+    </div>
+
+    <!-- ───────────────────────── HUD ───────────────────────── -->
+    <header id="hud" class="hud" hidden>
+      <div class="hud__brand">
+        <span class="wordmark wordmark--sm wordmark--cream">GRAND<span class="dot">.</span></span>
+        <span class="hud__divider" aria-hidden="true"></span>
+        <span class="hud__place" id="hudPlace">Street &amp; approach</span>
+      </div>
+      <div class="hud__right">
+        <!-- Straight from the walkthrough into the online shop. Gold-outlined,
+             because it is the only outbound action in the interface. -->
+        <a id="btnShop" class="chip chip--shop" href="./shop.html">
+          <span class="chip__icon" aria-hidden="true">◦</span>Shop now
+        </a>
+        <button id="btnTour" class="chip" type="button" aria-pressed="false">
+          <span class="chip__icon" aria-hidden="true">▶</span><span id="btnTourLabel">Tour</span>
+        </button>
+        <button id="btnMarkers" class="chip" type="button" aria-pressed="true">Markers</button>
+        <button id="btnQuality" class="chip" type="button">Quality: High</button>
+        <button id="btnHelp" class="chip chip--icon" type="button" aria-label="Controls and credits">?</button>
+      </div>
+    </header>
+
+    <!-- Stage rail — also the full keyboard-only navigation path -->
+    <nav id="rail" class="rail" hidden aria-label="Journey stages">
+      <ol class="rail__list" id="railList"></ol>
+    </nav>
+
+    <p id="hint" class="hint" hidden></p>
+
+    <!-- ───────────────────────── Hotspot panel ───────────────────────── -->
+    <aside id="panel" class="panel" hidden role="dialog" aria-modal="false" aria-labelledby="panelTitle">
+      <button id="panelClose" class="panel__close" type="button" aria-label="Close">×</button>
+      <p class="panel__kicker" id="panelKicker"></p>
+      <h2 class="panel__title" id="panelTitle"></h2>
+      <p class="panel__body" id="panelBody"></p>
+      <ul class="panel__list" id="panelList"></ul>
+      <p class="panel__foot" id="panelFoot"></p>
+    </aside>
+
+    <!-- ───────────────────────── Help sheet ───────────────────────── -->
+    <div id="help" class="overlay overlay--scrim" hidden>
+      <div class="sheet">
+        <button id="helpClose" class="panel__close" type="button" aria-label="Close">×</button>
+        <h2 class="sheet__head">Getting around</h2>
+        <dl class="sheet__keys">
+          <dt><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / arrows</dt><dd>Walk</dd>
+          <dt>Mouse drag</dt><dd>Look around</dd>
+          <dt><kbd>Shift</kbd></dt><dd>Walk quicker</dd>
+          <dt><kbd>1</kbd>–<kbd>6</kbd></dt><dd>Jump to a stage</dd>
+          <dt><kbd>T</kbd></dt><dd>Play or pause the tour</dd>
+          <dt><kbd>M</kbd></dt><dd>Show or hide markers</dd>
+          <dt><kbd>Esc</kbd></dt><dd>Close whatever's open</dd>
+        </dl>
+        <p class="sheet__note" id="helpTouchNote" hidden>
+          On a phone this runs as a node tour: drag to look, and use the stage rail
+          along the bottom to move between the six stops.
+        </p>
+        <h2 class="sheet__head">What you're looking at</h2>
+        <p class="sheet__body">
+          The GRAND. store — a 5.2m terraced Irish high-street unit, its street, and
+          the full interior: vestibule, greeting floor, library wall, tasting bar,
+          snug, counter, and a sliver of back-of-house behind the half-glazed door.
+          Built to the locked palette and to millimetre fixture heights.
+        </p>
+        <p class="sheet__body sheet__body--quiet" id="helpAssumptions"></p>
+      </div>
+    </div>
+
+    <noscript>
+      <div class="overlay overlay--cream">
+        <div class="gate">
+          <div class="wordmark wordmark--md">GRAND<span class="dot">.</span></div>
+          <h1 class="gate__head">This one needs JavaScript.</h1>
+          <p class="gate__body">The walkthrough is a real-time 3D build. Turn JavaScript on and it'll open right up.</p>
+        </div>
+      </div>
+    </noscript>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en-IE">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#163A2B" />
+    <title>GRAND. — Shop</title>
+    <meta
+      name="description"
+      content="Tea, gummies, gum, drinks, flower and merch from GRAND. Ireland's first legal recreational cannabis dispensary. Premium products, conscious choices."
+    />
+    <link rel="stylesheet" href="./src/shop/shop.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <!-- Age gate. Shares its session flag with the 3D walkthrough, so a visitor
+         who has already been asked isn't asked twice. -->
+    <div id="ageGate" class="overlay overlay--cream" hidden>
+      <div class="gate">
+        <div class="wordmark wordmark--md">GRAND<span class="dot">.</span></div>
+        <p class="gate__eyebrow">Before you come in</p>
+        <h1 class="gate__head">Are you 18 or over?</h1>
+        <p class="gate__body">
+          Legal cannabis in Ireland is for adults only. We ask everyone — no
+          exceptions, no hard feelings.
+        </p>
+        <div class="gate__actions">
+          <button id="gateYes" class="btn btn--solid" type="button">Yes, I'm 18 or over</button>
+          <button id="gateNo" class="btn btn--ghost" type="button">Not yet</button>
+        </div>
+        <p class="gate__foot">A design showcase for ICAD Upstarts 2026. Nothing is for sale here.</p>
+      </div>
+    </div>
+
+    <div id="ageDenied" class="overlay overlay--green" hidden>
+      <div class="gate gate--denied">
+        <div class="wordmark wordmark--md wordmark--cream">GRAND<span class="dot">.</span></div>
+        <h1 class="gate__head gate__head--cream">Come back and see us.</h1>
+        <p class="gate__body gate__body--cream">
+          We'll keep the lights on. In the meantime, mind yourself.
+        </p>
+        <button id="gateBack" class="btn btn--outline" type="button">Back</button>
+      </div>
+    </div>
+
+    <div id="shell" hidden>
+      <header id="siteHeader"></header>
+      <main id="main" tabindex="-1"></main>
+      <footer id="siteFooter"></footer>
+    </div>
+
+    <div id="toast" class="toast" hidden aria-live="polite"></div>
+
+    <noscript>
+      <div class="overlay overlay--cream">
+        <div class="gate">
+          <div class="wordmark wordmark--md">GRAND<span class="dot">.</span></div>
+          <h1 class="gate__head">This one needs JavaScript.</h1>
+          <p class="gate__body">
+            The shop is a single-page build. Turn JavaScript on and it'll open right up.
+          </p>
+        </div>
+      </div>
+    </noscript>
+
+    <script type="module" src="./src/shop/main.js"></script>
+  </body>
+</html>
