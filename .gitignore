@@ -29,3 +29,7 @@ logs/
 # Licensed typeface — not redistributable. See public/fonts/README.md
 public/fonts/*
 !public/fonts/README.md
+
+# Generated design file — embeds the licensed typeface, so it stays local.
+# Rebuild with: node tools/build-design-file.mjs
+design/
