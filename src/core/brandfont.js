@@ -18,10 +18,18 @@
  * USB stick at the exhibition.
  */
 
-/** Absolute URL for a file in `public/`, correct under any base. */
+/**
+ * Absolute URL for a file in `public/`, correct under any base.
+ *
+ * Falls back to a plain relative path outside a browser, so the same modules can
+ * be imported by the design-file generator under Node without a DOM.
+ */
 export function assetUrl(path) {
-  const base = import.meta.env.BASE_URL || './';
-  return new URL(path.replace(/^\//, ''), new URL(base, window.location.href)).href;
+  const clean = path.replace(/^\//, '');
+  const env = typeof import.meta !== 'undefined' ? import.meta.env : null;
+  const base = (env && env.BASE_URL) || './';
+  if (typeof window === 'undefined' || !window.location) return base + clean;
+  return new URL(clean, new URL(base, window.location.href)).href;
 }
 
 export const WARREN_WOFF = 'fonts/WARREN.woff';

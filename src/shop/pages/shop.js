@@ -10,11 +10,15 @@ import {
   byId,
   categoryById,
   doseOf,
+  extraPhotosFor,
+  hasPhoto,
   heroes,
   money,
+  priceWith,
   scaleName,
+  variantsFor,
 } from '../catalogue.js';
-import { packshot, pips } from '../packshot.js';
+import { media, packshot, pips } from '../packshot.js';
 import { crumbs, esc, masthead, toast } from '../layout.js';
 import * as cart from '../cart.js';
 
@@ -23,8 +27,9 @@ export function card(p) {
   const mg = doseOf(p);
   return `
     <article class="card">
-      <a class="card__shot" href="#/product/${p.id}" aria-label="${esc(p.name)}">
-        <span class="card__arch">${packshot(p, mg)}</span>
+      <a class="card__shot${hasPhoto(p) ? ' card__shot--photo' : ''}" href="#/product/${p.id}"
+         aria-label="${esc(p.name)}">
+        <span class="card__arch">${media(p, mg)}</span>
         ${p.hero ? '<span class="card__hero" title="Hero product">★</span>' : ''}
       </a>
       <div class="card__body">
@@ -227,16 +232,56 @@ export function product(route) {
 
     <section class="wrap product">
       <div class="product__shot">
-        <span class="product__arch">${packshot(p, mg)}</span>
+        <span class="product__arch${hasPhoto(p) ? ' product__arch--photo' : ''}" id="heroShot">
+          ${media(p, mg)}
+        </span>
+        ${
+          extraPhotosFor(p).length
+            ? `<div class="product__views">
+                 <button class="view is-on" type="button" data-view="">
+                   ${media(p, mg)}
+                 </button>
+                 ${extraPhotosFor(p)
+                   .map(
+                     (v) => `<button class="view" type="button" data-view="${v}">
+                               ${media(p, mg, v)}
+                             </button>`,
+                   )
+                   .join('')}
+               </div>`
+            : ''
+        }
       </div>
 
       <div class="product__detail">
         <p class="product__cat"><a href="#/shop/${cat.id}">${esc(cat.name)}</a></p>
         <h1 class="product__name">${esc(p.name)}</h1>
         <p class="product__notes">${esc(p.notes)}</p>
-        <p class="product__price">${money(p.price)}</p>
+        <p class="product__price" id="price">${money(p.price)}</p>
 
         <p class="product__body">${esc(p.body)}</p>
+
+        ${variantsFor(p)
+          .map(
+            (g, gi) => `
+          <div class="variant" data-group="${gi}">
+            <p class="variant__label">${esc(g.name)}</p>
+            <div class="variant__opts" role="radiogroup" aria-label="${esc(g.name)}">
+              ${g.values
+                .map(
+                  (v, vi) => `
+                <button class="variant__opt${vi === 0 ? ' is-on' : ''}" type="button"
+                        role="radio" aria-checked="${vi === 0}"
+                        data-group="${gi}" data-value="${esc(v.label)}">
+                  <span>${esc(v.label)}</span>
+                  ${v.note ? `<em>${esc(v.note)}</em>` : ''}
+                </button>`,
+                )
+                .join('')}
+            </div>
+          </div>`,
+          )
+          .join('')}
 
         ${
           step
@@ -288,10 +333,46 @@ export function product(route) {
     mount(root) {
       mountAdders(root);
       const qty = root.querySelector('#qty');
+      const priceEl = root.querySelector('#price');
+
+      // ── Variants ──────────────────────────────────────────────────────────
+      // One selection per group. The price recalculates from the catalogue
+      // rather than from anything held in the DOM, so what's shown and what's
+      // added to the cart can't disagree.
+      const groups = variantsFor(p);
+      const chosen = groups.map((g) => g.values[0].label);
+
+      const repriceAndLabel = () => {
+        if (priceEl) priceEl.textContent = money(priceWith(p, chosen));
+      };
+
+      for (const btn of root.querySelectorAll('.variant__opt')) {
+        btn.addEventListener('click', () => {
+          const gi = Number(btn.dataset.group);
+          chosen[gi] = btn.dataset.value;
+          for (const sib of root.querySelectorAll(`.variant__opt[data-group="${gi}"]`)) {
+            const on = sib === btn;
+            sib.classList.toggle('is-on', on);
+            sib.setAttribute('aria-checked', String(on));
+          }
+          repriceAndLabel();
+        });
+      }
+
+      // ── Alternate views ───────────────────────────────────────────────────
+      const hero = root.querySelector('#heroShot');
+      for (const v of root.querySelectorAll('.view')) {
+        v.addEventListener('click', () => {
+          if (hero) hero.innerHTML = media(p, mg, v.dataset.view || null);
+          for (const sib of root.querySelectorAll('.view')) sib.classList.toggle('is-on', sib === v);
+        });
+      }
+
       root.querySelector('#addOne').addEventListener('click', () => {
         const n = Math.max(1, Math.min(99, Number(qty.value) || 1));
-        cart.add(p.id, n);
-        toast(`${p.name} ×${n} — added to your cart`);
+        cart.add(p.id, n, chosen);
+        const what = chosen.length ? ` (${chosen.join(' · ')})` : '';
+        toast(`${p.name}${what} ×${n} — added to your cart`);
       });
     },
   };

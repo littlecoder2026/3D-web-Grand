@@ -490,3 +490,112 @@ export const money = (n) => `€${n.toFixed(2)}`;
 /** The dose in milligrams for a product's Grand Scale step. */
 export const doseOf = (p) => (p.scale ? SCALE[p.scale - 1].mg : null);
 export const scaleName = (p) => (p.scale ? SCALE[p.scale - 1].name : null);
+
+// ---------------------------------------------------------------------------
+// Photography
+//
+// Shot per category rather than per SKU, which is how the packaging system was
+// produced — one pack design per category, the flavour or strain changing on
+// the face. Tea and merch have no photography yet and fall back to the drawn
+// packshot, so the grid never shows a hole.
+//
+// Every shot is on a white sweep, so the site frames them in a white arched
+// alcove rather than on the cream page — the same lit niche the products sit in
+// on the shop wall.
+// ---------------------------------------------------------------------------
+
+export const CATEGORY_PHOTO = {
+  gum: 'gum',
+  drinks: 'drinks',
+  gummies: 'gummies',
+  mensch: 'mensch',
+  prerolls: 'prerolls',
+  vape: 'vape',
+  flower: 'flower',
+};
+
+/** Secondary views, shown on the product page only. */
+export const EXTRA_PHOTOS = {
+  flower: ['flower-pouch'],
+};
+
+export const photoFor = (p) => CATEGORY_PHOTO[p.category] || null;
+export const extraPhotosFor = (p) => EXTRA_PHOTOS[p.category] || [];
+export const hasPhoto = (p) => Boolean(CATEGORY_PHOTO[p.category]);
+
+// ---------------------------------------------------------------------------
+// Variants
+//
+// Read off the packs themselves: the gum carton states 20 pieces at 2mg, the
+// can 355ml at 10mg, the flower pouch 3.5g, the gummy jar ten at 10mg, the
+// dropper 30ml at 500/500, the pre-roll tin five. Those are the base variant of
+// each category; the rest are the sizes a real shop would carry alongside.
+//
+// `delta` is added to the product's base price. The base variant is always the
+// one the photographed pack shows, so the shot and the default selection agree.
+// ---------------------------------------------------------------------------
+
+const V = (name, values) => ({ name, values });
+const opt = (label, delta = 0, note = '') => ({ label, delta, note });
+
+export const CATEGORY_VARIANTS = {
+  tea: [V('Pack', [opt('20 bags'), opt('40 bags', 8, 'Save €4')])],
+
+  gummies: [
+    V('Pack', [opt('10 gummies · 100mg jar'), opt('20 gummies · 200mg jar', 13, 'Save €3')]),
+  ],
+
+  gum: [V('Pack', [opt('20 pieces'), opt('40 pieces · 2 packs', 6, 'Save €2')])],
+
+  drinks: [
+    V('Pack', [opt('Single can · 355ml'), opt('Four pack', 17, 'Save €7'), opt('Twelve pack', 48, 'Save €24')]),
+  ],
+
+  mensch: [
+    V('Size', [opt('30ml'), opt('15ml', -14)]),
+    V('Strength', [opt('500mg CBD · 500mg THC'), opt('1000mg CBD · 250mg THC', 12)]),
+  ],
+
+  flower: [V('Weight', [opt('3.5g'), opt('7g', 34, 'Save €8'), opt('14g', 62, 'Save €22')])],
+
+  prerolls: [V('Pack', [opt('5 pre-rolls · 3.5g'), opt('3 pre-rolls · 2.1g', -10)])],
+
+  vape: [V('Size', [opt('1g · 1000mg THC'), opt('0.5g · 500mg THC', -12)])],
+
+  merch: [V('Size', [opt('S'), opt('M'), opt('L'), opt('XL')])],
+};
+
+/**
+ * Variants for a product. Balms are sold by the tin rather than the bottle, and
+ * merch that isn't a garment is one-size — so a couple of categories need the
+ * override rather than the category default.
+ */
+export function variantsFor(p) {
+  if (p.category === 'mensch' && p.form === 'jar') {
+    return [V('Size', [opt('50ml tin'), opt('100ml tin', 11, 'Save €3')])];
+  }
+  if (p.category === 'merch' && p.form !== 'tee') {
+    return [V('Size', [opt('One size')])];
+  }
+  if (p.category === 'vape' && p.form === 'device' && p.id === 'vape-device') {
+    return [V('Finish', [opt('Bottle green'), opt('Forest ink', 0)])];
+  }
+  return CATEGORY_VARIANTS[p.category] || [];
+}
+
+/** The variant a product page opens on — the one the photograph shows. */
+export const defaultVariant = (p) =>
+  variantsFor(p).map((g) => ({ name: g.name, label: g.values[0].label, delta: g.values[0].delta }));
+
+/** Price for a chosen set of variant labels. */
+export function priceWith(p, chosen = []) {
+  const groups = variantsFor(p);
+  let total = p.price;
+  chosen.forEach((c, i) => {
+    const g = groups[i];
+    if (!g) return;
+    const v = g.values.find((x) => x.label === c);
+    if (v) total += v.delta;
+  });
+  return total;
+}

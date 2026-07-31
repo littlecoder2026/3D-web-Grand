@@ -10,6 +10,9 @@
  * online and the shelf in the room hold the same objects.
  */
 
+import { assetUrl } from '../core/brandfont.js';
+import { photoFor } from './catalogue.js';
+
 const GOLD = '#C8922E';
 const CREAM = '#F4EEDE';
 const GREEN = '#163A2B';
@@ -241,6 +244,26 @@ export function packshot(p, mg) {
 
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" height="100%" role="img"
                aria-label="${p.name}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+}
+
+/**
+ * The product image.
+ *
+ * Photography where the packaging system has been shot, the drawn packshot
+ * everywhere else — so tea and merch still show something on-brand rather than
+ * leaving a hole in the grid. Both come back at the same aspect, so the arched
+ * frame doesn't change size depending on which one it gets.
+ *
+ * @param {object} p    product
+ * @param {number} mg   dose, passed through to the drawn fallback
+ * @param {string} name file in public/products, without extension
+ */
+export function media(p, mg, name = null) {
+  const photo = name || photoFor(p);
+  if (!photo) return packshot(p, mg);
+  const alt = `${p.name} — ${p.notes}`;
+  return `<img class="shot__photo" src="${assetUrl(`products/${photo}.jpg`)}"
+               alt="${alt.replace(/"/g, '&quot;')}" width="1000" height="1000" loading="lazy" decoding="async" />`;
 }
 
 /**

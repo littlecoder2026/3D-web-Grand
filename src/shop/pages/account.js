@@ -7,8 +7,8 @@
  * nowhere on this site to type a card number.
  */
 
-import { byId, doseOf, money } from '../catalogue.js';
-import { packshot, pips } from '../packshot.js';
+import { byId, doseOf, money, priceWith } from '../catalogue.js';
+import { media, packshot, pips } from '../packshot.js';
 import { crumbs, esc, masthead, toast } from '../layout.js';
 import * as cart from '../cart.js';
 
@@ -216,33 +216,40 @@ export function cartPage() {
         }
 
         const rows = lines
-          .map(({ id, qty }) => {
+          .map(({ id, qty, variant = [] }) => {
             const p = byId(id);
             if (!p) return '';
             const mg = doseOf(p);
+            const key = cart.lineKey(id, variant);
+            const each = priceWith(p, variant);
             return `
               <li class="line">
                 <a class="line__shot" href="#/product/${p.id}" aria-label="${esc(p.name)}">
-                  ${packshot(p, mg)}
+                  ${media(p, mg)}
                 </a>
                 <div class="line__detail">
                   <h3 class="line__name"><a href="#/product/${p.id}">${esc(p.name)}</a></h3>
                   <p class="line__notes">${esc(p.notes)}</p>
+                  ${variant.length ? `<p class="line__variant">${esc(variant.join(' · '))}</p>` : ''}
                   ${mg ? `<p class="line__dose">${pips(p.scale)} ${mg}mg per serving</p>` : ''}
                 </div>
                 <div class="line__qty">
-                  <button class="step" data-dec="${p.id}" aria-label="One fewer ${esc(p.name)}">−</button>
-                  <input class="qty__input" type="number" min="0" max="99" value="${qty}" data-qty="${p.id}"
+                  <button class="step" data-dec="${key}" aria-label="One fewer ${esc(p.name)}">−</button>
+                  <input class="qty__input" type="number" min="0" max="99" value="${qty}" data-qty="${key}"
                          aria-label="Quantity of ${esc(p.name)}" />
-                  <button class="step" data-inc="${p.id}" aria-label="One more ${esc(p.name)}">+</button>
+                  <button class="step" data-inc="${key}" aria-label="One more ${esc(p.name)}">+</button>
                 </div>
-                <p class="line__price">${money(p.price * qty)}</p>
-                <button class="line__remove" data-remove="${p.id}" aria-label="Remove ${esc(p.name)}">Remove</button>
+                <p class="line__price">${money(each * qty)}</p>
+                <button class="line__remove" data-remove="${key}" data-name="${esc(p.name)}"
+                        aria-label="Remove ${esc(p.name)}">Remove</button>
               </li>`;
           })
           .join('');
 
-        const subtotal = lines.reduce((n, { id, qty }) => n + (byId(id)?.price ?? 0) * qty, 0);
+        const subtotal = lines.reduce((n, { id, qty, variant = [] }) => {
+          const p = byId(id);
+          return n + (p ? priceWith(p, variant) : 0) * qty;
+        }, 0);
         const delivery = subtotal >= FREE_OVER || subtotal === 0 ? 0 : DELIVERY;
         const toFree = Math.max(0, FREE_OVER - subtotal);
 
@@ -274,13 +281,13 @@ export function cartPage() {
         // Quantity controls
         for (const b of wrap.querySelectorAll('[data-inc]')) {
           b.addEventListener('click', () => {
-            const line = cart.lines().find((l) => l.id === b.dataset.inc);
+            const line = cart.lines().find((l) => cart.lineKey(l.id, l.variant || []) === b.dataset.inc);
             cart.setQty(b.dataset.inc, (line?.qty ?? 0) + 1);
           });
         }
         for (const b of wrap.querySelectorAll('[data-dec]')) {
           b.addEventListener('click', () => {
-            const line = cart.lines().find((l) => l.id === b.dataset.dec);
+            const line = cart.lines().find((l) => cart.lineKey(l.id, l.variant || []) === b.dataset.dec);
             cart.setQty(b.dataset.dec, (line?.qty ?? 1) - 1);
           });
         }
@@ -289,9 +296,8 @@ export function cartPage() {
         }
         for (const b of wrap.querySelectorAll('[data-remove]')) {
           b.addEventListener('click', () => {
-            const p = byId(b.dataset.remove);
             cart.remove(b.dataset.remove);
-            toast(`${p?.name ?? 'Item'} — removed`);
+            toast(`${b.dataset.name || 'Item'} — removed`);
           });
         }
 

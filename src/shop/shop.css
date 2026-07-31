@@ -579,12 +579,18 @@ a { color: inherit; }
   align-items: start;
 }
 .product__shot {
+  /* Plain sticky container. The arched niche is on .product__arch inside it, so
+     the alternate-view thumbnails can sit below the arch instead of within it. */
+  position: sticky;
+  top: 150px;
+}
+.product__arch {
+  display: block;
   background: linear-gradient(168deg, var(--cream-2), color-mix(in srgb, var(--sage) 28%, var(--cream)));
   border-radius: 50% 50% 4px 4px / 20% 20% 2px 2px;
   border: 1px solid color-mix(in srgb, var(--gold) 46%, transparent);
   padding: 12% 16% 8%;
-  position: sticky;
-  top: 150px;
+  overflow: hidden;
 }
 .product__cat {
   font-family: var(--inform);
@@ -951,4 +957,105 @@ a { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Product photography & variants
+   ═════════════════════════════════════════════════════════════════════════ */
+
+/* The packs are shot on a white sweep, so the arched frame turns white when it
+   holds a photograph rather than a drawn packshot. Read as a lit alcove — the
+   same niche the products stand in on the shop wall — instead of a pale box
+   floating on the cream page. */
+/* The packs are shot on a white sweep, so the niche turns white when it holds a
+   photograph. It reads as a lit alcove — the same one the products stand in on
+   the shop wall — rather than a white box floating on cream. */
+.card__shot--photo,
+.product__arch--photo {
+  background: #fff;
+}
+/* Photography needs less inset than the drawn packshots, which carry their own. */
+.product__arch--photo { padding: 7% 7% 5%; }
+.card__shot--photo .card__arch { padding: 7% 7% 4%; }
+
+.shot__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+/* ── Alternate views ─────────────────────────────────────────────────────── */
+.product__views {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+.view {
+  width: 74px;
+  height: 74px;
+  padding: 0;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(22, 58, 43, 0.16);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.view .shot__photo { padding: 4%; }
+.view.is-on { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+.view:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ── Variant selector ────────────────────────────────────────────────────── */
+.variant { margin: 22px 0 0; }
+.variant__label {
+  margin: 0 0 9px;
+  font-family: var(--inform);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(22, 58, 43, 0.62);
+}
+.variant__opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.variant__opt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid rgba(22, 58, 43, 0.24);
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: var(--inform);
+  font-size: 13px;
+  color: var(--bottle);
+  text-align: left;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+.variant__opt em {
+  font-style: normal;
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+}
+.variant__opt:hover { border-color: rgba(22, 58, 43, 0.5); }
+.variant__opt.is-on {
+  border-color: var(--bottle);
+  background: rgba(22, 58, 43, 0.05);
+  box-shadow: inset 0 0 0 1px var(--bottle);
+}
+.variant__opt:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ── Cart line variant ───────────────────────────────────────────────────── */
+.line__variant {
+  margin: 2px 0 0;
+  font-family: var(--inform);
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: rgba(22, 58, 43, 0.6);
+}
+.line__shot { background: #fff; }
+
+@media (max-width: 640px) {
+  .variant__opt { flex: 1 1 auto; }
 }
