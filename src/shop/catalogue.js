@@ -92,8 +92,9 @@ export const CATEGORIES = [
     plan: 8,
     tagline: 'Wear it. Live it.',
     blurb:
-      'Caps, totes and tees in bottle green and cream. The only touchpoint that leaves ' +
-      'the shop and keeps working.',
+      'Hoodies, tees, shorts, hats, totes, a bottle and the cups we serve tea in — all ' +
+      'carrying CULTIVATED WITH INTENTION. Advertising is restricted in this category, ' +
+      'so the only touchpoint that leaves the shop and keeps working is the one you wear.',
   },
 ];
 
@@ -441,30 +442,25 @@ export const PRODUCTS = [
   },
 
   // ── Merch ─────────────────────────────────────────────────────────────────
+  // Eight pieces, all photographed. Everything here carries CULTIVATED WITH
+  // INTENTION. — the merch line's own lockup, which is the strategy's
+  // "advertising restrictions make word of mouth the channel" pillar made
+  // wearable. This is the only touchpoint that leaves the shop and keeps working.
   {
-    id: 'merch-cap',
-    name: 'The cap',
+    id: 'merch-hoodie',
+    name: 'The hoodie',
     category: 'merch',
-    form: 'cap',
-    price: 28,
+    form: 'tee',
+    price: 68,
     scale: null,
-    notes: 'cotton twill · brass · six panel',
-    when: 'Every day, apparently.',
+    hero: true,
+    notes: 'heavyweight cotton · fleece-backed · embroidered',
+    when: 'Most of the winter, if we are honest.',
     tone: '#22432F',
-    body: 'Bottle green six-panel with the wordmark embroidered small on the front and a brass buckle.',
-  },
-  {
-    id: 'merch-tote',
-    name: 'The tote',
-    category: 'merch',
-    form: 'tote',
-    price: 18,
-    scale: null,
-    notes: 'canvas · unbleached · roomy',
-    when: 'The messages.',
-    tone: '#DED6C2',
-    ink: '#163A2B',
-    body: 'Sixteen-ounce unbleached canvas, long handles, and it holds a full shop.',
+    body:
+      'Premium heavyweight cotton blend, soft fleece inside, with the wordmark ' +
+      'embroidered across the chest and the crest on the sleeve. The back carries ' +
+      'CULTIVATED WITH INTENTION. under a gold botanical wreath.',
   },
   {
     id: 'merch-tee',
@@ -473,10 +469,100 @@ export const PRODUCTS = [
     form: 'tee',
     price: 32,
     scale: null,
-    notes: 'heavy cotton · boxy · soft',
+    notes: 'heavy cotton · boxy · sand',
     when: 'Weekends.',
+    tone: '#E4DAC4',
+    ink: '#163A2B',
+    body:
+      'Two hundred and forty gram cotton in undyed sand, cut boxy. Wordmark small ' +
+      'on the chest, the full statement large across the back over a gold leaf outline.',
+  },
+  {
+    id: 'merch-shorts',
+    name: 'The shorts',
+    category: 'merch',
+    form: 'tee',
+    price: 42,
+    scale: null,
+    notes: 'lightweight · moisture wicking · zip pocket',
+    when: 'The gym, or pretending to go.',
     tone: '#22432F',
-    body: 'Two hundred and forty gram cotton, boxy cut, wordmark small on the chest.',
+    body:
+      'Lightweight and breathable with a zipped back pocket, gold drawcord tips and ' +
+      'the crest at the hip. Built for actual use rather than for the photograph.',
+  },
+  {
+    id: 'merch-cap',
+    name: 'The cap',
+    category: 'merch',
+    form: 'cap',
+    price: 28,
+    scale: null,
+    notes: 'cotton twill · two-tone · six panel',
+    when: 'Every day, apparently.',
+    tone: '#E4DAC4',
+    ink: '#163A2B',
+    body:
+      'Sand crown, bottle green peak, wordmark embroidered across the front and the ' +
+      'crest patched on the side. Adjustable, so it fits whoever picks it up.',
+  },
+  {
+    id: 'merch-bucket',
+    name: 'The bucket hat',
+    category: 'merch',
+    form: 'cap',
+    price: 30,
+    scale: null,
+    notes: 'garment-dyed twill · brass eyelets',
+    when: 'Festivals, and the one week of Irish summer.',
+    tone: '#22432F',
+    body:
+      'Garment-dyed bottle green twill with brass eyelets, the crest and wordmark ' +
+      'embroidered on the crown, and a woven tab at the brim.',
+  },
+  {
+    id: 'merch-tote',
+    name: 'The tote',
+    category: 'merch',
+    form: 'tote',
+    price: 18,
+    scale: null,
+    notes: 'canvas · unbleached · zip pocket',
+    when: 'The messages.',
+    tone: '#DED6C2',
+    ink: '#163A2B',
+    body:
+      'Sixteen-ounce unbleached canvas with bottle green gussets and webbing, a gold ' +
+      'leaf on the side panel and a zipped inner pocket. It holds a full shop.',
+  },
+  {
+    id: 'merch-bottle',
+    name: 'The water bottle',
+    category: 'merch',
+    form: 'bottle',
+    price: 26,
+    scale: null,
+    notes: 'stainless · vacuum sealed · brass lid',
+    when: 'The desk, the gym, the car.',
+    tone: '#22432F',
+    body:
+      'Powder-coated stainless in bottle green with a brushed brass lid and a carry ' +
+      'loop. Seven hundred and fifty millilitres, vacuum sealed, keeps cold all day.',
+  },
+  {
+    id: 'merch-cups',
+    name: 'The cups',
+    category: 'merch',
+    form: 'cup',
+    price: 12,
+    scale: null,
+    notes: 'double wall · compostable · green lid',
+    when: 'Every pot of tea you make for somebody else.',
+    tone: '#EDE6D6',
+    ink: '#163A2B',
+    body:
+      'The cup we serve tea in at the counter, sold as a pack for home. Double-walled ' +
+      'and compostable, with the diamond pattern round the base and a bottle green lid.',
   },
 ];
 
@@ -504,6 +590,22 @@ export const scaleName = (p) => (p.scale ? SCALE[p.scale - 1].name : null);
 // on the shop wall.
 // ---------------------------------------------------------------------------
 
+/**
+ * Per-product photography. Merch is shot piece by piece rather than as a
+ * category — a hoodie and a water bottle have nothing in common to photograph
+ * together — so these win over CATEGORY_PHOTO below.
+ */
+export const PRODUCT_PHOTO = {
+  'merch-hoodie': 'merch-hoodie',
+  'merch-tee': 'merch-tee',
+  'merch-shorts': 'merch-shorts',
+  'merch-cap': 'merch-cap',
+  'merch-bucket': 'merch-bucket',
+  'merch-tote': 'merch-tote',
+  'merch-bottle': 'merch-bottle',
+  'merch-cups': 'merch-cups',
+};
+
 export const CATEGORY_PHOTO = {
   gum: 'gum',
   drinks: 'drinks',
@@ -519,9 +621,9 @@ export const EXTRA_PHOTOS = {
   flower: ['flower-pouch'],
 };
 
-export const photoFor = (p) => CATEGORY_PHOTO[p.category] || null;
+export const photoFor = (p) => PRODUCT_PHOTO[p.id] || CATEGORY_PHOTO[p.category] || null;
 export const extraPhotosFor = (p) => EXTRA_PHOTOS[p.category] || [];
-export const hasPhoto = (p) => Boolean(CATEGORY_PHOTO[p.category]);
+export const hasPhoto = (p) => Boolean(PRODUCT_PHOTO[p.id] || CATEGORY_PHOTO[p.category]);
 
 // ---------------------------------------------------------------------------
 // Variants
@@ -566,6 +668,22 @@ export const CATEGORY_VARIANTS = {
 };
 
 /**
+ * Merch is sized piece by piece: garments run S–XXL, hats are one-size or
+ * two-fit, and the bottle and cups are sold by volume and pack. Photographed
+ * variant first, so the shot and the default selection agree.
+ */
+export const MERCH_VARIANTS = {
+  'merch-hoodie': [V('Size', [opt('S'), opt('M'), opt('L'), opt('XL'), opt('XXL', 4)])],
+  'merch-tee': [V('Size', [opt('S'), opt('M'), opt('L'), opt('XL'), opt('XXL', 3)])],
+  'merch-shorts': [V('Size', [opt('S'), opt('M'), opt('L'), opt('XL')])],
+  'merch-cap': [V('Fit', [opt('One size · adjustable')])],
+  'merch-bucket': [V('Fit', [opt('S / M'), opt('L / XL')])],
+  'merch-tote': [V('Size', [opt('One size')])],
+  'merch-bottle': [V('Volume', [opt('750ml · 25oz'), opt('500ml · 17oz', -5)])],
+  'merch-cups': [V('Pack', [opt('8 cups'), opt('25 cups', 18, 'Save €19')])],
+};
+
+/**
  * Variants for a product. Balms are sold by the tin rather than the bottle, and
  * merch that isn't a garment is one-size — so a couple of categories need the
  * override rather than the category default.
@@ -574,8 +692,8 @@ export function variantsFor(p) {
   if (p.category === 'mensch' && p.form === 'jar') {
     return [V('Size', [opt('50ml tin'), opt('100ml tin', 11, 'Save €3')])];
   }
-  if (p.category === 'merch' && p.form !== 'tee') {
-    return [V('Size', [opt('One size')])];
+  if (p.category === 'merch') {
+    return MERCH_VARIANTS[p.id] || [V('Size', [opt('One size')])];
   }
   if (p.category === 'vape' && p.form === 'device' && p.id === 'vape-device') {
     return [V('Finish', [opt('Bottle green'), opt('Forest ink', 0)])];
