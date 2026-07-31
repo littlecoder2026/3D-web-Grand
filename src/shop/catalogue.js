@@ -596,6 +596,14 @@ export const scaleName = (p) => (p.scale ? SCALE[p.scale - 1].name : null);
  * together — so these win over CATEGORY_PHOTO below.
  */
 export const PRODUCT_PHOTO = {
+  // Tea is shot per blend: the tube carries the blend name, its three flavour
+  // words and its own illustration, so one category shot could never stand in
+  // for four.
+  'tea-barmbrack': 'tea-barmbrack',
+  'tea-dublin-dry': 'tea-dublin-dry',
+  'tea-liffeyside': 'tea-liffeyside',
+  'tea-loose': 'tea-loose',
+
   'merch-hoodie': 'merch-hoodie',
   'merch-tee': 'merch-tee',
   'merch-shorts': 'merch-shorts',
@@ -694,6 +702,10 @@ export function variantsFor(p) {
   }
   if (p.category === 'merch') {
     return MERCH_VARIANTS[p.id] || [V('Size', [opt('One size')])];
+  }
+  // Loose leaf is sold by weight in a tin, not by the bag like the other three.
+  if (p.id === 'tea-loose') {
+    return [V('Weight', [opt('100g tin'), opt('250g refill', 24, 'Save €9')])];
   }
   if (p.category === 'vape' && p.form === 'device' && p.id === 'vape-device') {
     return [V('Finish', [opt('Bottle green'), opt('Forest ink', 0)])];
