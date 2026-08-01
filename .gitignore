@@ -33,3 +33,13 @@ public/fonts/*
 # Generated design file — embeds the licensed typeface, so it stays local.
 # Rebuild with: node tools/build-design-file.mjs
 design/
+
+# Blender output — proof renders and the saved scene both embed the licensed
+# typeface, and they are regenerated in one command, so they stay local.
+# Rebuild with: blender -b -P blender/render.py -- --out renders
+renders/
+*.blend1
+
+# Python bytecode
+__pycache__/
+*.py[cod]
