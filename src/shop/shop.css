@@ -70,7 +70,6 @@ a { color: inherit; }
   display: inline-block;
 }
 .wordmark .dot { color: var(--gold); }
-.wordmark--lg { font-size: clamp(54px, 9vw, 104px); }
 .wordmark--md { font-size: clamp(34px, 6vw, 52px); }
 .wordmark--sm { font-size: clamp(20px, 2.6vw, 26px); }
 .wordmark--cream { color: var(--cream); }
@@ -348,24 +347,27 @@ a { color: inherit; }
 .hero__body { font-size: 18px; line-height: 1.62; max-width: 46ch; opacity: 0.84; margin: 0 0 2em; }
 .hero__actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-/* The arch — the store's product niche, used as the hero frame. */
+/* The seal — the mark that appears on every pack, carried into the hero. */
 .hero__art { display: grid; place-items: center; }
-.hero__arch {
+.hero__mark {
   width: min(100%, 400px);
-  aspect-ratio: 4 / 5;
-  background: linear-gradient(170deg, var(--bottle), var(--ink));
-  border-radius: 50% 50% 6px 6px / 34% 34% 3px 3px;
-  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
-  display: grid;
-  place-items: center;
-  box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--cream) 6%, transparent);
+  height: auto;
+  filter: drop-shadow(0 22px 44px color-mix(in srgb, var(--ink) 26%, transparent));
 }
-.hero__arch .wordmark { color: var(--cream); }
 @media (max-width: 860px) {
   .hero__inner { grid-template-columns: 1fr; }
   .hero__art { order: -1; }
-  .hero__arch { width: min(100%, 280px); }
+  .hero__mark { width: min(100%, 280px); }
 }
+
+/* ═══════════════════════════ ROUNDEL ═══════════════════════════ */
+/* Transparent outside the disc, so it sits on any ground. Colours are set
+   here rather than in the markup so the palette lives in one place. */
+.roundel { display: block; }
+.roundel__disc { fill: var(--ink); }
+.roundel__ring { stroke: var(--gold); }
+.roundel__legend,
+.roundel__g { fill: var(--cream); font-family: var(--display); }
 
 /* ═══════════════════════════ STRIP ═══════════════════════════ */
 .strip { background: var(--bottle); color: var(--cream); }

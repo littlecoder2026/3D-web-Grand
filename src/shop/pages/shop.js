@@ -19,6 +19,7 @@ import {
   variantsFor,
 } from '../catalogue.js';
 import { media, packshot, pips } from '../packshot.js';
+import { roundel } from '../roundel.js';
 import { crumbs, esc, masthead, toast } from '../layout.js';
 import * as cart from '../cart.js';
 
@@ -79,10 +80,8 @@ export function home() {
             <a class="btn btn--ghost" href="./index.html">Walk the store in 3D</a>
           </div>
         </div>
-        <div class="hero__art" aria-hidden="true">
-          <div class="hero__arch">
-            <span class="wordmark wordmark--lg">GRAND<span class="dot">.</span></span>
-          </div>
+        <div class="hero__art">
+          ${roundel({ className: 'hero__mark', title: 'GRAND · Ireland' })}
         </div>
       </div>
     </section>
